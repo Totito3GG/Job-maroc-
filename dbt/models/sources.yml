@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: silver
+    description: "Données nettoyées par transform/bronze_to_silver.py"
+    schema: silver
+    tables:
+      - name: offres
+        columns:
+          - name: offre_id
+            data_tests: [unique, not_null]
+      - name: offre_competences
+      - name: offre_contrats

@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: fact_offres
+    description: "Une ligne par offre d'emploi (couche gold, schéma en étoile)"
+    columns:
+      - name: offre_id
+        data_tests: [unique, not_null]
+      - name: entreprise_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_entreprise'), field: entreprise_key}}
+      - name: ville_key
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_ville'), field: ville_key}}
+      - name: secteur_key
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_secteur'), field: secteur_key}}
+      - name: metier_key
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_metier'), field: metier_key}}
+      - name: date_key
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_date'), field: date_key}}
+      - name: contrat_principal
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['CDI', 'CDD', 'Intérim', 'Stage', 'Freelance', 'Anapec', 'Alternance', 'Temps partiel', 'Statutaire']
+              config: {severity: warn}
+      - name: nombre_postes
+        data_tests: [not_null]
+
+  - name: dim_ville
+    columns:
+      - name: ville_key
+        data_tests: [unique, not_null]
+  - name: dim_entreprise
+    columns:
+      - name: entreprise_key
+        data_tests: [unique, not_null]
+  - name: dim_secteur
+    columns:
+      - name: secteur_key
+        data_tests: [unique, not_null]
+  - name: dim_metier
+    columns:
+      - name: metier_key
+        data_tests: [unique, not_null]
+  - name: dim_competence
+    columns:
+      - name: competence_key
+        data_tests: [unique, not_null]
+  - name: dim_date
+    columns:
+      - name: date_key
+        data_tests: [unique, not_null]
+
+  - name: bridge_offre_competence
+    columns:
+      - name: offre_id
+        data_tests:
+          - relationships: {arguments: {to: ref('fact_offres'), field: offre_id}}
+      - name: competence_key
+        data_tests:
+          - relationships: {arguments: {to: ref('dim_competence'), field: competence_key}}
+  - name: bridge_offre_contrat
+    columns:
+      - name: offre_id
+        data_tests:
+          - relationships: {arguments: {to: ref('fact_offres'), field: offre_id}}

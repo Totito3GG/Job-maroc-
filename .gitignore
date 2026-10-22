@@ -2,3 +2,5 @@ venv/
 .env
 data/raw/
 __pycache__/
+dbt/target/
+dbt/logs/
